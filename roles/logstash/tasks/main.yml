@@ -1,0 +1,7 @@
+---
+# file: roles/logstash/tasks/main.yml
+- name: install java and logstash
+  yum: name={{ item }} state=present
+  with_items:
+     - openjdk
+     - logstash

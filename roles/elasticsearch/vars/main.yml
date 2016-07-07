@@ -1,0 +1,15 @@
+---
+#file: /roles/common/vars/main.yml
+
+hostgroups:
+  - hostgroup: cerx86b-250
+    servicehostport: 250 
+    servicehosts:
+     - 192.168.17.180
+     - 192.168.17.181
+
+  - hostgroup: cerx86b-22
+    servicehostport: 22
+    servicehosts:
+     - 192.168.17.180
+     - 192.168.17.181

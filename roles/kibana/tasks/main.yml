@@ -1,0 +1,7 @@
+---
+# file: roles/kibana/tasks/main.yml
+- name: install java and kibana
+  yum: name={{ item }} state=present
+  with_items:
+     - openjdk
+     - kibana

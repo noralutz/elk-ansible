@@ -1,0 +1,10 @@
+# file: inventory_files/development/elk-hosts
+
+[controlhost]
+sauron.cluster.net:250
+
+[elasticsearch-host]
+elasticsearch-dev.cluster.net:250
+
+[logstash-host]
+logstash-dev.cluster.net:250

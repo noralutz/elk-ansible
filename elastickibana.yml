@@ -1,0 +1,10 @@
+---
+# This playbook deploys elasticsearch and kibana
+ - name: elk 
+   become: true
+   hosts: elasticsearch
+   roles: 
+     - common
+     - elasticsearch
+     - kibana
+
