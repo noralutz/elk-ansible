@@ -1,12 +1,24 @@
 ---
-# file: roles/kibana/tasks/main.yml
-- name: install java and kibana
+# file: roles/nginx/tasks/main.yml
+- name: install nginx
   yum: name={{ item }} state=present
   with_items:
-     - java-openjdk
-     - kibana
+    - nginx
+    - httpd-tools
+    - python-passlib
 
+- name: create kibana admin user
+  htpasswd: path=/etc/nginx/htpasswd.users name=kibadmin password={{ kibadminpw }}
 
-# edit /opt/kibana/config/kibana.yml to restrict access to localhost only
-# systemctl start kibana
-# chkconfig kibana on
+- name: copy nginx cfg file
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf 
+
+- name: copy kibana cfg file
+  template: src=nginx_kibana_conf.j2 dest=/etc/nginx/conf.d/kibana.conf
+
+- name: enable nginx service
+  command: systemctl enable nginx.service
+ 
+- name: start nginx
+  command: systemctl start nginx.service
+

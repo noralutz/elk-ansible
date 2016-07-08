@@ -6,11 +6,30 @@
      - java-openjdk
      - elasticsearch
 
-# enable elasticsearch service at boot
-#  sudo systemctl daemon-reload
-#  sudo systemctl enable elasticsearch.service
-# drop in elasticsearch.yml template
-# allow port 9200,9300 to cluster net IPs
-# start thus;
-#   sudo systemctl start elasticsearch.service
-# 
+- name: drop in elasticsearch.yml template
+  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml
+
+- name: elasticsearch firewall rules
+  firewalld: rich_rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="{{ item }}" accept' permanent=true immediate=true  state=enabled
+  with_items:
+     - 9200
+     - 9300
+  ignore_errors: yes
+
+# systemd module not available until 2.2, substitute command module until then
+#- name: enable elasticsearch service
+# systemd: name=elasticsearch.service enabled=yes dameon_reload=yes
+#
+#- name: start elasticsearch service
+#  systemd: name=elasticsearch.service state=started
+#
+
+- name: reload systemd
+  command: systemctl daemon-reload
+
+- name: enable elasticsearch service
+  command: systemctl enable elasticsearch.service
+
+- name: start elasticsearch
+  command: systemctl start elasticsearch.service
+
