@@ -7,7 +7,10 @@
      - logstash
 
 - name: ssl for logbeat
-  command: openssl req -subj '/CN={{ ansible_nodename }}/' -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout /etc/pki/tls/private/logstash-forwarder.key -out /etc/pki/tls/certs/logstash-forwarder.crt
+  command: openssl req -subj '/CN=logstash-dev/' -x509 -days 3650 -batch -nodes -newkey rsa:2048 -keyout /etc/pki/tls/private/logstash-forwarder.key -out /etc/pki/tls/certs/logstash-forwarder.crt
+
+- name: fetch ssl for later use
+  fetch: src=/etc/pki/tls/certs/logstash-forwarder.crt dest=/tmp/logstash-forwarder.crt flat=yes
 
 - name: logstash logbeat input
   copy: src=02-beats-input.conf dest=/etc/logstash/conf.d/02-beats-input.conf
@@ -17,6 +20,12 @@
 
 - name: logstash elasticsearch output
   template: src=30-elasticsearch-output.conf.j2 dest=/etc/logstash/conf.d/30-elasticsearch-output.conf
+
+- name: logstash input firewall rules
+  firewalld: rich_rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="{{ item }}" accept' permanent=true state=enabled
+  with_items:
+     - 5044
+  ignore_errors: yes
 
 - name: check logstash configs
   command: service logstash configtest

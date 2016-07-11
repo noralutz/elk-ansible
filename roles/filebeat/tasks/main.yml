@@ -1,0 +1,20 @@
+---
+# file: roles/filebeat/tasks/main.yml
+- name: install java and filebeat
+  yum: name={{ item }} state=present
+  with_items:
+     - java-openjdk
+     - filebeat
+
+- name: drop in filebeat yml template
+  template: src=filebeat.yml.j2 dest=/etc/filebeat/filebeat.yml
+
+- name: copy logstash ssl
+  copy: src=/tmp/logstash-forwarder.crt dest=/etc/pki/tls/certs/logstash-forwarder.crt 
+
+- name: enable filebeat service
+  command: systemctl enable filebeat
+
+- name: start filebeat
+  command: systemctl restart filebeat
+
