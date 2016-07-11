@@ -2,3 +2,4 @@
 # This playbook deploys the whole currently defined configuration to asdc resources
 - include: elastickibana.yml
 - include: logstash.yml
+- include: filebeat.yml

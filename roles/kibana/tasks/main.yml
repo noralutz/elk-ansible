@@ -5,8 +5,16 @@
   with_items:
      - java-openjdk
      - kibana
+     - unzip
 
+- name: start kibana
+  command: systemctl start kibana
+ 
+- name: config kibana to start at boot
+  command: chkconfig kibana on
 
-# edit /opt/kibana/config/kibana.yml to restrict access to localhost only
-# systemctl start kibana
-# chkconfig kibana on
+- name: copy filebeat dashboards
+  copy: src=beats-dashboards-1.1.0.zip dest=/root/beats-dashboards-1.1.0.zip
+ 
+- name: copy filebeat index template 
+  copy: src=filebeat-index-template.json dest=/root/filebeat-index-template.json
