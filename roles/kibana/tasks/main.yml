@@ -8,7 +8,7 @@
      - unzip
 
 - name: start kibana
-  command: systemctl start kibana
+  command: systemctl restart kibana
  
 - name: config kibana to start at boot
   command: chkconfig kibana on

@@ -31,5 +31,5 @@
   command: systemctl enable elasticsearch.service
 
 - name: start elasticsearch
-  command: systemctl start elasticsearch.service
+  command: systemctl restart elasticsearch.service
 

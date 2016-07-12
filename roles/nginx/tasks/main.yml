@@ -16,9 +16,15 @@
 - name: copy kibana cfg file
   template: src=nginx_kibana_conf.j2 dest=/etc/nginx/conf.d/kibana.conf
 
+- name: logstash input firewall rules
+  firewalld: rich_rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="{{ item }}" accept' permanent=true immediate=true state=enabled
+  with_items:
+    - 80
+  ignore_errors: yes
+
 - name: enable nginx service
   command: systemctl enable nginx.service
  
 - name: start nginx
-  command: systemctl start nginx.service
+  command: systemctl restart nginx.service
 
