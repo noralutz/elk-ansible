@@ -1,8 +1,8 @@
 ---
 # file: roles/logstash/tasks/main.yml
 - name: install java and logstash
-  yum: name={{ item }} state=present
-  with_items:
+  yum: name="{{ item }}" state=present
+  loop:
      - java-openjdk
      - logstash
 
@@ -23,7 +23,7 @@
 
 - name: logstash input firewall rules
   firewalld: rich_rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="{{ item }}" accept' permanent=true state=enabled
-  with_items:
+  loop:
      - 5044
   ignore_errors: yes
 
@@ -31,9 +31,4 @@
   command: service logstash configtest
 
 - name: restart logstash service
-  command: systemctl restart logstash
-
-- name: config logstash to start at boot
-  command: chkconfig logstash on   
-
-
+  systemd: name=logstash state=restarted enabled=yes

@@ -1,18 +1,15 @@
 ---
 # file: roles/kibana/tasks/main.yml
 - name: install java and kibana
-  yum: name={{ item }} state=present
-  with_items:
+  yum: name="{{ item }}" state=present
+  loop:
      - java-openjdk
      - kibana
      - unzip
 
 - name: start kibana
-  command: systemctl restart kibana
+  systemd: name=kibana state=restarted enabled=yes
  
-- name: config kibana to start at boot
-  command: chkconfig kibana on
-
 - name: copy filebeat dashboards
   copy: src=beats-dashboards-1.1.0.zip dest=/root/beats-dashboards-1.1.0.zip
  

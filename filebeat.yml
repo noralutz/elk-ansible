@@ -1,7 +1,7 @@
 ---
 # This playbook deploys filebeat log shipping on clients
 - hosts: filebeat-clients
+  become: yes
   roles: 
-    - common
     - filebeat
-
+  

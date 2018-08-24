@@ -1,7 +1,7 @@
 ---
 # This playbook deploys logstash
 - hosts: logstash-host
+  become: yes
   roles: 
-    - common
     - logstash
 

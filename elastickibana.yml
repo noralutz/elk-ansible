@@ -1,8 +1,8 @@
 ---
 # This playbook deploys elasticsearch and kibana
 - hosts: elasticsearch-host
+  become: yes
   roles: 
-    - common
     - elasticsearch
     - nginx
     - kibana

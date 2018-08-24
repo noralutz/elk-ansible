@@ -1,8 +1,8 @@
 ---
 # file: roles/elasticsearch/tasks/main.yml
 - name: install java and elasticsearch
-  yum: name={{ item }} state=present
-  with_items:
+  yum: name="{{ item }}" state=present
+  loop:
      - java-openjdk
      - elasticsearch
 
@@ -11,25 +11,8 @@
 
 - name: elasticsearch firewall rules
   firewalld: rich_rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="{{ item }}" accept' permanent=true immediate=true  state=enabled
-  with_items:
+  loop:
      - 9200
      - 9300
-  ignore_errors: yes
-
-# systemd module not available until 2.2, substitute command module until then
-#- name: enable elasticsearch service
-# systemd: name=elasticsearch.service enabled=yes dameon_reload=yes
-#
-#- name: start elasticsearch service
-#  systemd: name=elasticsearch.service state=started
-#
-
-- name: reload systemd
-  command: systemctl daemon-reload
-
 - name: enable elasticsearch service
-  command: systemctl enable elasticsearch.service
-
-- name: start elasticsearch
-  command: systemctl restart elasticsearch.service
-
+  systemd: name=elasticsearch.service enabled=yes dameon_reload=yes restarted=yes

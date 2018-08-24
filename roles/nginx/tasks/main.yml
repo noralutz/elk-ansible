@@ -1,30 +1,30 @@
 ---
 # file: roles/nginx/tasks/main.yml
 - name: install nginx
-  yum: name={{ item }} state=present
-  with_items:
+  yum: name="{{ item }}" state=present
+  loop:
     - nginx
     - httpd-tools
     - python-passlib
+
+- name: import kibana admin password from vault
+  include: kib_admin.yml
 
 - name: create kibana admin user
   htpasswd: path=/etc/nginx/htpasswd.users name=kibadmin password={{ kibadminpw }}
 
 - name: copy nginx cfg file
   copy: src=nginx.conf dest=/etc/nginx/nginx.conf 
+  register: nginx
 
 - name: copy kibana cfg file
   template: src=nginx_kibana_conf.j2 dest=/etc/nginx/conf.d/kibana.conf
 
 - name: logstash input firewall rules
   firewalld: rich_rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="{{ item }}" accept' permanent=true immediate=true state=enabled
-  with_items:
+  loop:
     - 80
-  ignore_errors: yes
 
 - name: enable nginx service
-  command: systemctl enable nginx.service
- 
-- name: start nginx
-  command: systemctl restart nginx.service
-
+  systemd: name=nginx state=restarted enabled=yes
+  when: nginx.changed

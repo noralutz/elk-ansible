@@ -1,8 +1,8 @@
 ---
 # file: roles/filebeat/tasks/main.yml
 - name: install java and filebeat
-  yum: name={{ item }} state=present
-  with_items:
+  yum: name="{{ item }}" state=present
+  loop:
      - java-openjdk
      - filebeat
 
@@ -13,8 +13,4 @@
   copy: src=/tmp/logstash-forwarder.crt dest=/etc/pki/tls/certs/logstash-forwarder.crt 
 
 - name: enable filebeat service
-  command: systemctl enable filebeat
-
-- name: start filebeat
-  command: systemctl restart filebeat
-
+  systemd: state=restarted name=filebeat enabled=yes
