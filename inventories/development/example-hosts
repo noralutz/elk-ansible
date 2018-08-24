@@ -1,0 +1,11 @@
+# file: inventories/development/elk-hosts
+
+[elasticsearch-host]
+elasticsearch-dev.example.net
+
+[logstash-host]
+logstash-dev.example.net
+
+[filebeat-clients:children]
+logstash-host
+elasticsearch-host
